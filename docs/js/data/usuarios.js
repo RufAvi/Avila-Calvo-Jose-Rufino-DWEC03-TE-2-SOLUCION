@@ -3,8 +3,8 @@ export const jsonUsuarios = [
       "id":0,
       "nombre" : "Rufino",
       "apellido" : "Ávila",
-      "usuario":"javila",
-      "contraseña":"12345678"
+      "usuario": "javila",
+      "contraseña": "12345678"
    },  
    {
       "id":1,

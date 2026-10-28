@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenida</title>
+    <title>Parejas TIC | Bienvenida</title>
+    <meta name="theme-color" content="#0b1326">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/bienvenida.css">
@@ -11,7 +12,81 @@
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
         crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="pagina pagina-centrada">
+    <!-- Tarjeta central de bienvenida -->
+    <main class="panel panel-bienvenida">
+        <header class="cabecera-panel cabecera-bienvenida">
+            <span class="marca-logo" aria-hidden="true">🏆</span>
+            <h1>¡Bienvenido a Parejas TIC!</h1>
+            <p>Módulo de entrenamiento visual y memoria conceptual de sistemas.</p>
+        </header>
+
+        <!-- Instrucciones de controles -->
+        <section class="bloque-seccion" aria-labelledby="titulo-instrucciones">
+            <h2 id="titulo-instrucciones">Instrucciones del juego</h2>
+            
+            <ul class="lista-instrucciones">
+            <li>
+                <span aria-hidden="true">🔎</span>
+                <span>Pasa el ratón para enfocar una carta</span>
+            </li>
+            <li>
+                <span aria-hidden="true">🔄️</span>
+                <span>Doble clic para voltear una carta</span>
+            </li>
+            <li>
+                <span aria-hidden="true">❓</span>
+                <span>Clic derecho para marcar una carta con duda</span>
+            </li>
+            <li>
+                <span aria-hidden="true">_</span>
+                <span>Barra espaciadora: pista rápida de 1 s <code>(-50 puntos)</code></span>
+            </li>
+            </ul>
+        </section>
+
+        <!-- Formulario de selección de nivel -->
+        <form id="formulario-nivel" class="bloque-seccion">
+            
+            <div id="mensaje-bienvenida" class="aviso" role="alert" hidden></div>
+
+            <fieldset class="grupo-niveles">
+            <legend>Selecciona nivel de dificultad</legend>
+            
+            <label class="opcion-nivel">
+                <input type="radio" name="level" value="principiante" checked>
+                <span class="texto-nivel">
+                <strong>Principiante</strong>
+                <small>6 cartas — Matriz 2x3</small>
+                </span>
+                <span class="contador-cartas">6 cartas</span>
+            </label>
+
+            <label class="opcion-nivel">
+                <input type="radio" name="level" value="intermedio">
+                <span class="texto-nivel">
+                <strong>Intermedio</strong>
+                <small>12 cartas — Matriz 3x4</small>
+                </span>
+                <span class="contador-cartas">12 cartas</span>
+            </label>
+
+            <label class="opcion-nivel">
+                <input type="radio" name="level" value="avanzado">
+                <span class="texto-nivel">
+                <strong>Avanzado</strong>
+                <small>16 cartas — Matriz 4x4</small>
+                </span>
+                <span class="contador-cartas">16 cartas</span>
+            </label>
+            </fieldset>
+
+            <button class="boton boton-primario boton-ancho-total boton-grande" type="submit">
+            ▶️ &nbsp; Jugar
+            </button>
+        </form>
+
+    </main>
     <script type="module" src="js/bienvenida.js" ></script>
 </body>
 </html>
