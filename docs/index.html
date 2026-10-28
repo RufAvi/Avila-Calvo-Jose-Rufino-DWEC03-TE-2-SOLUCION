@@ -3,15 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INDEX</title>
+    <meta name="theme-color" content="#0b1326"> 
+
+    <title>Parejas TIC | Inicio de sesión</title>
     <link rel="icon" href="data:,">
+<!-- Hojas de etilo: general y especificia de login -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/login.css">
+    <!-- Bibloteca jQuery cargada desde CDN oficial -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
         crossorigin="anonymous"></script>
 </head>
-<body>
+<body class = "pagina pagina-centrada">
+    <!-- contenedor principal -->
+     <main class="panel panel-login">
+
+        <!-- Cabecera con logotivo y título -->
+         <header class="cabecera-panel">
+            <span class="marca-logo" aria-hidden="true">🏁</span>
+            <h1>Parejas TIC</h1>
+            <p>Inicio de Sesión</p>
+         </header>
+
+         <!-- Formulario de acceso   novalidadte para gestionar validaciones con Js/JQuery -->
+
+        <form action="" id="formulario-login" novalidate >
+            <!-- contenedor accesible para mostrar avisos de error -->
+             <div id="mensaje-login" class="aviso" role="alert" aria-live="polite" hidden></div>
+            
+             <!-- Campo de entrada para el nombre de usuario -->
+            <label for="" class="campo-formulario">
+                <span>
+                    Usuario
+                </span>
+                <input 
+                    id="usuario"
+                    name="usuario"
+                    type="text"
+                    autocomplete="username"
+                    required
+                    placeholder="javila"
+                >
+            </label>
+
+            <!-- Campo de entrada para la contraseña -->
+             <label for="" class="campo-formulario">
+                <span>Contraseña</span>
+                <input
+                    id="password"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                    placeholder="Solo letras y números"
+                >
+            </label>
+
+            <!-- Boón de envío del formulario -->
+             <button class="boton boton-primario boton-ancho-total" type="submit">
+                Enviar
+             </button>
+
+
+        </form>
+
+
+     </main>
+    <!-- Controlador modular  javaScript  -->
     <script type="module" src="js/login.js" ></script>
 </body>
 </html>

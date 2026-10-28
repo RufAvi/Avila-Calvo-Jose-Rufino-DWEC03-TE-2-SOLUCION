@@ -1,0 +1,53 @@
+/* Interfaz de Login */
+.panel-login {
+  width: min(100%, 26.25rem); /* Tope de 420px para que el formulario no quede gigante en PC */
+  padding: 1.5rem;
+}
+
+.panel-login .marca-logo {
+  width: 2rem;
+  height: 2rem;
+  background-color: transparent;
+}
+
+.panel-login .cabecera-panel {
+  margin-bottom: 1.5rem;
+}
+
+/* Contenedor para alinear la etiqueta y el input */
+.campo-formulario {
+  display: grid;
+  gap: 0.4375rem;
+  margin: 0 0 1.0625rem;
+  color: #c8d2e7;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.campo-formulario input {
+  width: 100%;
+  min-height: 2.625rem;
+  padding: 0.5625rem 0.75rem;
+  color: #f8fafc;
+  background-color: var(--canvas);
+  border: 1px solid #3b455b;
+  border-radius: 0.375rem;
+  outline: none; /* Quitamos el borde por defecto del navegador */
+  transition: border-color 0.2s ease;
+}
+
+/* Estado activo al escribir en el input */
+.campo-formulario input:focus {
+  border-color: #4d83ff;
+}
+
+.panel-login .boton-ancho-total {
+  margin-top: 0.5rem;
+}
+
+/* Ajustes para móviles */
+@media (max-width: 30rem) {
+  .panel-login {
+    padding: 1.375rem;
+  }
+}
