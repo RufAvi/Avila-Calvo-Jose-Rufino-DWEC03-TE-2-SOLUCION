@@ -1,4 +1,11 @@
-export const jsonUsuarios = [   
+export const jsonUsuarios = [ 
+   {
+      "id":0,
+      "nombre" : "Rufino",
+      "apellido" : "Ávila",
+      "usuario":"javila",
+      "contraseña":"12345678"
+   },  
    {
       "id":1,
       "nombre" : "Iker",
