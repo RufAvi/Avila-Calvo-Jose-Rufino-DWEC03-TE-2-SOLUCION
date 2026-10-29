@@ -17,3 +17,11 @@ export function autenticarUsuario(usuarios, username, password) {
     // Si lo encuentra devuelve el objeto del usuario, si no, null
     return usuarioEncontrado ?? null;
 }
+
+//Configuración de niveles
+export const NIVELES = Object.freeze({
+
+    principiante: Object.freeze({ cartas: 6, columnas: 3 }), //Matriz 2x3 ( 3 parejas)
+    intermedio: Object.freeze({ cartas: 12, columnas: 4}),
+    avanzado: Object.freeze({ cartas: 16, columnas: 4 }) //Matriz 4x4 (8 parejas) 
+}) ;
