@@ -12,11 +12,7 @@ import { esPasswordAlfanumerica, autenticarUsuario } from './services/juego.serv
  * Carga el catálogo de usuarios por defecto en localStorage la primera vez que se entra.
  */
 function inicializarUsuariosSiEsNecesario() {
-    const usuariosGuardados = leerJSON(localStorage, STORAGE_KEYS.users);
     
-    if (!usuariosGuardados) {
-        guardarJSON(localStorage, STORAGE_KEYS.users, jsonUsuarios);
-    }
     //Sincroniza los usuarios actuales en localStorage de jsonUsuarios
     guardarJSON(localStorage, STORAGE_KEYS.users, jsonUsuarios);
 }

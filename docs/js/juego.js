@@ -3,9 +3,14 @@
  * Carga el estado de la partida, baraja las cartas e inyecta el HTML dinámico.
  */
 
-import { crearBaraja } from './services/juego.service.js';
+import {
+    crearBaraja,
+    sonPareja,
+    sumarPuntosPareja,
+    aplicarPenalizacionPista
+} from './services/juego.service.js';
 import { jsonTarjetas } from './data/tarjetas.js';
-import { STORAGE_KEYS, leerJSON } from './services/storage.service.js';
+import { STORAGE_KEYS, leerJSON, guardarJSON } from './services/storage.service.js';
 
 const nombresNivel = {
     principiante: 'Principiante',
@@ -35,21 +40,23 @@ function crearElementoCarta(carta, indice) {
         data-symbol="${carta.id}"
         aria-label="Carta ${indice + 1} tapada"
         >
-        <span class="interior-carta">
-            <!-- Reverso (Boca abajo) -->
-            <span class="cara-carta reverso-carta">
-            <span class="numero-carta">#${numeroOrden}</span>
-            <span class="icono-carta" aria-hidden="true">?</span>
-            <span class="estado-carta">Tapada</span>
-            <span class="marca-carta" hidden>❓ Duda</span>
-            </span>
-            <!-- Anverso (Boca arriba) -->
-            <span class="cara-carta anverso-carta">
-            <span class="numero-carta">#${numeroOrden}</span>
-            <span class="icono-carta" aria-hidden="true">${carta.icono}</span>
-            <span class="nombre-carta">${carta.nombre}</span>
-            </span>
-        </span>
+        <div class="interior-carta">
+        
+            <!-- Cara A: Reverso (Boca abajo / Cubierta con interrogante) -->
+            <div class="cara-carta reverso-carta">
+                <span class="numero-carta">#${numeroOrden}</span>
+                <span class="icono-carta" aria-hidden="true">?</span>
+                <span class="estado-carta">Tapada</span>
+                <span class="marca-carta" hidden>❓Duda</span>
+            </div>
+            <!-- Cara B: Anverso (Boca arriba / Descubierta con el icono tecnológico) -->
+            <div class="cara-carta anverso-carta">
+                <span class="numero-carta">#${numeroOrden}</span>
+                <span class="icono-carta" aria-hidden="true">${carta.icono}</span>
+                <span class="nombre-carta">${carta.nombre}</span>
+                <span class="estado-carta">Revelada</span>
+            </div>
+        </div>
         </button>
     `;
 
@@ -57,7 +64,7 @@ function crearElementoCarta(carta, indice) {
     return $(plantillaHTML);
 }
 
-// 3. Inicialización del tablero principal
+// Inicialización del tablero principal
 $(function () {
     const $tablero = $('#tablero');
     const $etiquetaNivel = $('#insignia-nivel');
@@ -82,11 +89,36 @@ $(function () {
         $tablero.append(crearElementoCarta(carta, indice));
     });
 
-    // 4. Temporizador regresivo (30 segundos)
+    // Temporizador regresivo (30 segundos)
     const momentoInicio = Date.now();
     let tiempoRestante = estado.timeLimit;
+    
+    //VAriables de control de estado del juego para eventos
+    let primeraCarta = null;         // Guarda la primera carta volteada de la pareja
+    let tableroBloqueado = false;     // Bloquea nuevos clics mientras se comparan cartas
+    let temporizadorPista = null;     // Referencia del temporizador del comodín de pista
 
+    // Función para guardar el estado actual de la partida en sessionStorage
+    function guardarEstadoPartida() {
+        estado.timeRemaining = tiempoRestante;
+        guardarJSON(sessionStorage, STORAGE_KEYS.game, estado);
+    }
+
+    // Función para terminar la partida (victoria o tiempo agotado) y redirigir
+    function finalizarPartida(resultado) {
+        clearInterval(intervaloTemporizador);
+        if (temporizadorPista) clearTimeout(temporizadorPista);
+
+        estado.outcome = resultado;  // 'won' (victoria) o 'timeout' (derrota)
+        estado.timeSpent = estado.timeLimit - tiempoRestante;
+        guardarJSON(sessionStorage, STORAGE_KEYS.game, estado);
+
+        window.location.href = 'resultado.html';
+    }
+
+     // Intervalo que se ejecuta de forma síncrona cada 1000 ms (1 segundo)
     const intervaloTemporizador = window.setInterval(function () {
+
         // Usamos Date.now() en lugar de restar 1 para evitar desajustes si el navegador suspende la pestaña
         const segundosTranscurridos = Math.floor((Date.now() - momentoInicio) / 1000);
         tiempoRestante = Math.max(0, estado.timeLimit - segundosTranscurridos);
@@ -109,6 +141,134 @@ $(function () {
         }
     }, 1000);
 
+    /**
+    * EVENTOS DEL JUEGO
+    */
+
+    // 1. Mouseover / Mouseout: Efecto visual al enfocar una carta
+    $tablero.on('mouseover', '.carta', function () {
+        $(this).addClass('enfocada');
+    });
+
+    $tablero.on('mouseout', '.carta', function (evento) {
+        // Evita el parpadeo (flickering) si el ratón se mueve por los elementos hijos de la carta
+        if (!this.contains(evento.relatedTarget)) {
+            $(this).removeClass('enfocada');
+        }
+    });
+
+    // 2. Doble clic: Voltea la carta y comprueba si hay pareja
+    $tablero.on('dblclick', '.carta', function () {
+        const $cartaActual = $(this);
+        const elementoCarta = this;
+
+        // Bloqueos de seguridad
+        if (
+            tableroBloqueado ||
+            temporizadorPista ||
+            $cartaActual.hasClass('girada') ||
+            $cartaActual.hasClass('emparejada')
+        ) {
+            return;
+        }   
+
+        $cartaActual.addClass('girada');
+
+        if (!primeraCarta) {
+            primeraCarta = elementoCarta;
+            return;
+        }
+
+        // Segunda carta levantada: bloqueamos tablero y comparamos
+        const segundaCarta = elementoCarta;
+        tableroBloqueado = true;
+
+        const simbolo1 = primeraCarta.dataset.symbol;
+        const simbolo2 = segundaCarta.dataset.symbol;
+
+        if (sonPareja(simbolo1, simbolo2)) {
+            // ¡ACIERTO!
+            $(primeraCarta).removeClass('girada').addClass('emparejada');
+            $(segundaCarta).removeClass('girada').addClass('emparejada');
+
+            $(primeraCarta).find('.estado-carta').text('Emparejada');
+            $(segundaCarta).find('.estado-carta').text('Emparejada');
+
+            estado.pairsFound += 1;
+            estado.score = sumarPuntosPareja(estado.score);
+
+            $visorParejas.text(`${estado.pairsFound} / ${estado.totalPairs}`);
+            $visorPuntos.text(`${estado.score} pts`);
+
+            primeraCarta = null;
+            tableroBloqueado = false;
+            guardarEstadoPartida();
+
+            // Condición de victoria
+            if (estado.pairsFound === estado.totalPairs) {
+                finalizarPartida('won');
+            }
+        } else {
+            // ¡FALLO! Mantenemos las cartas a la vista casi un segundo
+            setTimeout(function () {
+                $(primeraCarta).removeClass('girada');
+                $(segundaCarta).removeClass('girada');
+
+                primeraCarta = null;
+                tableroBloqueado = false;
+            }, 850);
+        }
+    });
+
+    // Clic derecho, Marca la carta de duda
+    $tablero.on('contextmenu', '.carta', function (evento) {
+        const $carta = $(this);
+
+        if ($carta.hasClass('emparejada')) return;
+
+        evento.preventDefault(); // Evitamos que salga el menú del navegador
+
+        $carta.toggleClass('marcada');
+        const estaMarcada = $carta.hasClass('marcada');
+
+        const $marcaTexto = $carta.find('.marca-carta');
+        if (estaMarcada) {
+            $marcaTexto.removeAttr('hidden').text('⚑ Duda');
+        } else {
+            $marcaTexto.attr('hidden', true).text('');
+        }
+    });
+
+    // Barra espaciadora,  Comodín (penaliza puntos, levanta todo 1s)
+    $(document).on('keydown', function (evento) {
+        if (evento.code !== 'Space' || evento.originalEvent.repeat) return;
+
+        evento.preventDefault(); // Evitamos que la página haga scroll hacia abajo
+
+        if (tableroBloqueado || temporizadorPista || tiempoRestante <= 0) return;
+
+        estado.score = aplicarPenalizacionPista(estado.score);
+        $visorPuntos.text(`${estado.score} pts`);
+
+        const $cartasNoEmparejadas = $tablero.find('.carta:not(.emparejada)');
+        $cartasNoEmparejadas.addClass('en-pista');
+
+        temporizadorPista = setTimeout(function () {
+            $cartasNoEmparejadas.each(function () {
+                const elemento = this;
+                $(elemento).removeClass('en-pista');
+
+                if (elemento !== primeraCarta) {
+                    $(elemento).removeClass('girada');
+                }
+                });
+
+            temporizadorPista = null;
+            guardarEstadoPartida();
+        }, 1000);
+
+        guardarEstadoPartida();
+    });
 
 });
 

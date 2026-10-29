@@ -129,7 +129,10 @@
 }
 
 .interior-carta {
-    position: relative;
+    /* obligatoria imprtante para que los navegadores apliquen transform 3D */
+    display: block;
+
+    position: relative; /* el  100% del ancho del botón */
     width: 100%;
     height: 100%;
     border-radius: inherit;

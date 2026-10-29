@@ -3,7 +3,7 @@ export default class Tarjeta {
     constructor({id, nombre, icono}, copy ){
         this.id = id;
         this.nombre = nombre;
-        this.incono = icono;
+        this.icono = icono;
         this.cardId = `${id}-${copy}`;
     }
 }

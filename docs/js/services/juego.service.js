@@ -61,3 +61,21 @@ export function crearBaraja(simbolos, nivel, aleatorio = Math.random) {
 
     return baraja;
 }
+
+// Reglas de juego, aciertos y puntuación
+
+// Comprueba si dos cartas seleccionadas coinciden
+export function sonPareja(primerSimbolo, segundoSimbolo) {
+    return primerSimbolo === segundoSimbolo;
+}
+
+// Suma 100 puntos fijos por cada acierto
+export function sumarPuntosPareja(puntuacionActual) {
+    return puntuacionActual + 100;
+}
+
+// Penaliza con 50 puntos el uso de la pista por teclado
+export function aplicarPenalizacionPista(puntuacionActual) {
+  // Usamos Math.max para garantizar que el marcador nunca baje de 0
+    return Math.max(0, puntuacionActual - 50);
+}
