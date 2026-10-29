@@ -110,7 +110,7 @@ $(function () {
         if (temporizadorPista) clearTimeout(temporizadorPista);
 
         estado.outcome = resultado;  // 'won' (victoria) o 'timeout' (derrota)
-        estado.timeSpent = estado.timeLimit - tiempoRestante;
+        estado.elapsed = estado.timeLimit - tiempoRestante;
         guardarJSON(sessionStorage, STORAGE_KEYS.game, estado);
 
         window.location.href = 'resultado.html';
@@ -134,7 +134,7 @@ $(function () {
 
             // Guardamos la derrota en la sesión y redirigimos
             estado.outcome = 'timeout';
-            estado.timeSpent = estado.timeLimit;
+            estado.elapsed = estado.timeLimit;
             guardarJSON(sessionStorage, STORAGE_KEYS.game, estado);
             
             window.location.href = 'resultado.html';

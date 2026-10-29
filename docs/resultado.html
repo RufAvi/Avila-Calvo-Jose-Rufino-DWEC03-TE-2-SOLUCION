@@ -3,15 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultado</title>
+    <meta name="theme-color" content="#0b1326">
+    <title>Parejas TIC | Resultado</title>
     <link rel="icon" href="data:,">
+    <!-- Hojas de estilo -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/resultado.css">
+
+    <!-- Carga de jQuery (necesario para nuestra lógica) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" 
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
         crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="pagina pagina-centrada">
+
+    <!-- Contenedor principal de la tarjeta de resultados -->
+    <main class="panel panel-resultado">
+
+    <!-- Cabecera: El texto y el icono cambian desde JS si ganas o pierdes -->
+    <header class="cabecera-resultado">
+        <span class="marca-trofeo" aria-hidden="true">⌛</span>
+        <h1>Fin de la partida</h1>
+        <p id="mensaje-resultado">Resultado</p>
+    </header>
+
+    <!-- Bloque de estadísticas recuperadas de la sesión -->
+    <dl class="lista-resultados">
+        <div>
+        <dt><span aria-hidden="true">🏅</span> Puntuación</dt>
+        <dd id="resultado-puntuacion">0 puntos</dd>
+        </div>
+        <div>
+        <dt><span aria-hidden="true">🕑</span> Tiempo empleado</dt>
+        <dd id="resultado-tiempo">0 segundos</dd>
+        </div>
+        <div>
+        <dt><span aria-hidden="true">🏆</span> Nivel</dt>
+        <dd id="resultado-nivel">—</dd>
+        </div>
+    </dl>
+
+    <!-- Botonera de acciones -->
+    <nav class="acciones-resultado" aria-label="Opciones de navegación">
+        <a class="boton boton-primario" href="bienvenida.html" id="boton-jugar-de-nuevo">
+        Jugar de nuevo
+        </a>
+        <a class="boton boton-secundario" href="index.html" id="boton-salir">
+        Salir
+        </a>
+    </nav>
+
+    </main>
     <script type="module" src="js/resultado.js" ></script>
 </body>
 </html>

@@ -1,0 +1,116 @@
+/*    Panel de Resultados (Contenedor principal) */
+.panel-resultado {
+    width: min(100%, 33.75rem);
+    padding: 2.5rem;
+    margin: 0 auto;
+}
+
+/* --- Cabecera --- */
+.cabecera-resultado {
+    text-align: center;
+    padding: 0;
+    margin-bottom: 1.625rem;
+    border: 0;
+}
+
+.marca-trofeo {
+    display: inline-grid;
+    place-items: center;
+    width: 3.375rem;
+    height: 3.375rem;
+    margin-bottom: 1.125rem;
+    border-radius: 50%;
+    background-color: #121b30;
+    color: #b4c5ff;
+    font-size: 1.75rem;
+}
+
+.cabecera-resultado h1 {
+    font-size: 1.875rem;
+}
+
+.cabecera-resultado p {
+    font-size: 1rem;
+}
+
+/* Colores de estado (Inyectados por JS) */
+.cabecera-resultado p.resultado-ganado {
+    color: var(--verde-exito);
+}
+
+.cabecera-resultado p.resultado-perdido {
+    color: var(--rojo-error);
+}
+
+/*   Lista de Estadísticas (Puntuación, Tiempo, Nivel) */
+.lista-resultados {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0 0 1.625rem;
+}
+
+/* Tarjeta individual de cada estadística */
+.lista-resultados > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.625rem;
+    min-height: 3.875rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background-color: #111a2e;
+}
+
+/* Contenedor de la etiqueta y el icono */
+.lista-resultados dt {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #aebbd0;
+    font-size: 0.875rem;
+}
+
+/* Fondo decorativo del icono */
+.lista-resultados dt span {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    background-color: #1a2438;
+}
+
+/* Valor numérico destacado */
+.lista-resultados dd {
+    margin: 0;
+    color: #dbe4f7;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-align: right;
+}
+
+/*    Botones de Acción (Jugar de nuevo / Salir) */
+.acciones-resultado {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.acciones-resultado .boton {
+    flex: 1;
+}
+
+/* Adaptación Responsiva (Móviles < 480px) */
+@media (max-width: 30rem) {
+    .panel-resultado {
+        padding: 1.75rem 1.25rem;
+    }
+
+    .cabecera-resultado h1 {
+        font-size: 1.5625rem;
+    }
+
+    .acciones-resultado {
+        /* Apila los botones verticalmente para facilitar el toque con el pulgar */
+        flex-direction: column;
+    }
+}
