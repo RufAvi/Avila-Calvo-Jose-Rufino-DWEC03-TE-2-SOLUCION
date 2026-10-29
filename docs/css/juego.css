@@ -1,0 +1,352 @@
+/* Interfaz 3: Tablero, HUD y Cartas 3D */
+
+.pagina-juego {
+    padding: 1.5rem 2rem;
+    }
+
+.contenedor-juego {
+    width: min(100%, 64rem);
+    margin: 0 auto;
+}
+
+/* Barra Superior de Información (HUD) */
+.barra-herramientas {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.25rem;
+    padding: 0.75rem 1.375rem;
+    border: 1px solid #344057;
+    border-radius: 0.75rem;
+    background-color: #1e293b;
+}
+
+.marca-juego,
+.grupo-marcador,
+.caja-temporizador {
+    display: flex;
+    align-items: center;
+}
+
+.marca-juego {
+    gap: 0.6875rem;
+}
+
+.marca-juego .marca-logo {
+    width: auto;
+    height: auto;
+    background-color: transparent;
+    color: var(--cyan-acento);
+    font-size: 1.375rem;
+}
+
+.marca-juego strong {
+    color: #f7f9ff;
+    font-size: 1rem;
+}
+
+.insignia {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #3a465c;
+    border-radius: 0.3125rem;
+    color: #c3ccdc;
+    font-size: 0.6875rem;
+}
+
+/* Temporizador Regresivo */
+.caja-temporizador {
+    gap: 0.5625rem;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid #29364e;
+    border-radius: 0.4375rem;
+    background-color: #111a2e;
+    color: #c5cede;
+    font: 0.8125rem 'JetBrains Mono', monospace; /* Monoespaciado para que no baile el ancho de los números */
+    }
+
+.caja-temporizador > span,
+.caja-temporizador strong,
+.grupo-marcador strong {
+    color: var(--cyan-acento);
+}
+
+/* Estado de urgencia (últimos 10 segundos) */
+.caja-temporizador.tiempo-urgente {
+    border-color: var(--rojo-error);
+    color: #ffd2cf;
+}
+
+.caja-temporizador.tiempo-urgente strong {
+    color: var(--rojo-error);
+}
+
+/* Puntuación y Parejas */
+.grupo-marcador {
+    gap: 1.125rem;
+    color: #9caac0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.grupo-marcador strong {
+    margin-left: 0.3125rem;
+    color: #e2eaf8;
+}
+
+.grupo-marcador span:last-child strong {
+    color: var(--cyan-acento);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.separador-marcador {
+    height: 1.25rem;
+    border-left: 1px solid #3a465b;
+}
+
+/* Tablero de Cartas (Grid) */
+.tablero {
+    --columns: 3; /* Variable inyectada desde JS según la dificultad */
+    display: grid;
+    grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+    gap: 1rem;
+    width: min(100%, 56.25rem);
+    margin: 2rem auto 1.375rem;
+}
+
+/* Efecto 3D de las Cartas */
+.carta {
+    position: relative;
+    min-height: clamp(7.5rem, 16vw, 11.25rem);
+    padding: 0;
+    border: none;
+    border-radius: 0.625rem;
+    background: transparent;
+    cursor: pointer;
+    user-select: none; /* Evita que el doble clic seleccione texto por error */
+    perspective: 62.5rem; /* Profundidad de cámara para el efecto 3D */
+    outline: none;
+}
+
+.interior-carta {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    transform-style: preserve-3d;
+    transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1); /* Aceleración curva para un giro natural */
+}
+
+/* Activa el giro rotando el contenedor 180º */
+.carta.girada .interior-carta,
+.carta.emparejada .interior-carta,
+.carta.en-pista .interior-carta {
+    transform: rotateY(180deg);
+}
+
+.cara-carta {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: 1.25rem 1fr 1.125rem;
+    align-items: center;
+    justify-items: center;
+    padding: 0.875rem;
+    border-radius: inherit;
+    
+    /* Oculta la cara cuando está dada la vuelta */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Cara A: Dorso (Boca abajo) */
+.reverso-carta {
+    background-color: #1e293b;
+    border: 1px solid #354158;
+    color: #8190aa;
+    transform: rotateY(0deg);
+}
+
+.reverso-carta .icono-carta {
+    color: #4f5d75;
+    font-size: clamp(2rem, 5vw, 2.75rem);
+}
+
+/* Cara B: Frontal (Descubierta) */
+.anverso-carta {
+    background-color: #182338;
+    border: 1px solid #4a5873;
+    color: #f8fafc;
+    transform: rotateY(180deg); /* Arranca rotada para quedar bien tras el giro 3D */
+}
+
+.anverso-carta .icono-carta {
+    font-size: clamp(1.875rem, 5vw, 2.75rem);
+    line-height: 1.2;
+}
+
+.nombre-carta {
+    margin-top: 0.25rem;
+    color: #f4f7fd;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Estados Visuales Interactivos */
+/* 1. Evento mouseover */
+.carta:hover .cara-carta,
+.carta.enfocada .cara-carta {
+    border-color: var(--cyan-acento);
+}
+
+.carta:hover .reverso-carta .icono-carta,
+.carta.enfocada .reverso-carta .icono-carta {
+    color: var(--cyan-acento);
+}
+
+/* 2. Evento contextmenu (Clic derecho) */
+.carta.marcada .cara-carta {
+    border-color: var(--amarillo-alerta);
+}
+
+.carta.marcada .reverso-carta .marca-carta {
+    color: var(--amarillo-alerta);
+}
+
+/* 3. Evento keydown (Comodín) */
+.carta.en-pista .anverso-carta {
+    border-color: #b4c5ff;
+    background-color: #222a3d;
+}
+
+/* 4. Acierto definitivo */
+    .carta.emparejada .anverso-carta {
+    border: 2px solid var(--verde-exito);
+    background-color: #0b1728;
+    color: var(--verde-exito);
+}
+
+.carta.emparejada {
+    cursor: default;
+}
+
+/* Textos auxiliares dentro de las caras */
+.numero-carta {
+    justify-self: start;
+    width: 100%;
+    color: #74839b;
+    text-align: left;
+    font: 0.6875rem 'JetBrains Mono', monospace;
+}
+
+.estado-carta {
+    color: #8190aa;
+    font: 0.625rem 'JetBrains Mono', monospace;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.marca-carta {
+    position: absolute;
+    top: 0.6875rem;
+    right: 0.625rem;
+    font-size: 0.75rem;
+    color: var(--amarillo-alerta);
+}
+
+/* Pie de página */
+.leyenda-juego {
+    color: #95a2b9;
+    font: 0.75rem 'JetBrains Mono', monospace;
+    text-align: center;
+}
+
+.leyenda-juego span {
+    padding: 0 0.3125rem;
+    color: #56647a;
+}
+
+.error-juego {
+    max-width: 56.25rem;
+    margin: 1.125rem auto;
+}
+
+/* Responsive */
+@media (max-width: 47.5rem) {
+    .pagina-juego {
+    padding: 1rem;
+    }
+
+    .barra-herramientas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    padding: 0.875rem;
+    }
+
+    .marca-juego {
+    flex-wrap: wrap;
+    }
+
+    .caja-temporizador {
+    justify-self: end;
+    }
+
+    .grupo-marcador {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    }
+
+    .tablero {
+    gap: 0.625rem;
+    margin-top: 1.375rem;
+    }
+
+    .carta {
+    min-height: clamp(6.25rem, 23vw, 9.375rem);
+    }
+}
+
+@media (max-width: 30rem) {
+    .tablero {
+    gap: 0.4375rem;
+    margin: 1.0625rem auto;
+    }
+
+    .carta {
+    min-height: 6rem;
+    }
+
+    .cara-carta {
+    padding: 0.5rem;
+    }
+
+    .anverso-carta .icono-carta {
+    font-size: 1.75rem;
+    }
+
+    .nombre-carta {
+    font-size: 0.6875rem;
+    }
+
+    .barra-herramientas {
+    grid-template-columns: 1fr;
+    }
+
+    .caja-temporizador {
+    justify-self: start;
+    }
+
+    .grupo-marcador {
+    grid-column: auto;
+    font-size: 0.6875rem;
+    }
+
+    .leyenda-juego {
+    font-size: 0.5625rem;
+    line-height: 1.8;
+    }
+}

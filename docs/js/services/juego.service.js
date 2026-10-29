@@ -1,9 +1,11 @@
-// Reglas de negocio y lógica de autenticación (Login)
+// Reglas de negocio y lógica de autenticación (Login) y logica para el minijuego PAREJAS TIC
+import Tarjeta from '../models/Tarjeta.model.js';
 
 // Comprueba que la contraseña solo tenga letras y números (sin espacios ni símbolos)
 export function esPasswordAlfanumerica(password) {
     
     const patronAlfanumerico = /^[a-zA-Z0-9]+$/;
+   // metodo RegExp.test 
     return patronAlfanumerico.test(password);
 }
 
@@ -11,7 +13,7 @@ export function esPasswordAlfanumerica(password) {
 export function autenticarUsuario(usuarios, username, password) {
 
     const usuarioEncontrado = usuarios.find(
-    (u) => u.usuario === username && u.contraseña === password
+        (u) => u.usuario === username && u.contraseña === password
     );
 
     // Si lo encuentra devuelve el objeto del usuario, si no, null
@@ -25,3 +27,37 @@ export const NIVELES = Object.freeze({
     intermedio: Object.freeze({ cartas: 12, columnas: 4}),
     avanzado: Object.freeze({ cartas: 16, columnas: 4 }) //Matriz 4x4 (8 parejas) 
 }) ;
+
+
+/** 
+* Generación de la baraja y algoritmo de barajado (Fisher-Yates)
+* Prepara la baraja duplicando las cartas para crear parejas  y las mezcla aleatoriamente antes de inyectarlas al tablero.
+*/
+export function crearBaraja(simbolos, nivel, aleatorio = Math.random) {
+    const configuracion = NIVELES[nivel];
+
+    // Control de errores en caso de nivel inválido
+    if (!configuracion) {
+        throw new RangeError(`Nivel desconocido: ${nivel}`);
+    }
+
+    // Calculamos cuántas parejas distintas se necesitan según el nivel
+    const totalParejas = configuracion.cartas / 2;
+
+    // Recortamos el catálogo y creamos dos copias físicas de cada carta, 'html-a' y 'html-b'
+    const baraja = simbolos.slice(0, totalParejas).flatMap((simbolo) => [
+        new Tarjeta(simbolo, 'a'), 
+        new Tarjeta(simbolo, 'b')  
+    ]);
+
+    // Algoritmo Fisher-Yates, Recorre la baraja de atrás hacia adelante intercambiando posiciones
+    for (let i = baraja.length - 1; i > 0; i -= 1) {
+        // Calculamos un índice aleatorio entre 0 y la posición actual 'i'
+        const j = Math.floor(aleatorio() * (i + 1));
+
+        // Intercambiamos los elementos usando desestructuración
+        [baraja[i], baraja[j]] = [baraja[j], baraja[i]];
+    }
+
+    return baraja;
+}

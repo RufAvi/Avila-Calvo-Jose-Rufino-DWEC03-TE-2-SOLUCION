@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego</title>
+    <meta name="theme-color" content="#0b1326">
+
+    <title>Parejas TIC | Juego</title>
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/juego.css">
@@ -11,7 +13,45 @@
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
         crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="pagina pagina-juego">
+    <main class="contenedor-juego">
+
+    <!-- Barra superior de información en tiempo real  -->
+    <header class="barra-herramientas">
+
+        <!-- Logotipo, nombre y nivel actual -->
+        <div class="marca-juego">
+        <span class="marca-logo" aria-hidden="true">🏆</span>
+        <strong>Parejas TIC</strong>
+        <span id="insignia-nivel" class="insignia">Nivel: —</span>
+        </div>
+
+        <!-- Cuenta atrás de 30 segundos -->
+        <div class="caja-temporizador" aria-live="off">
+        <span aria-hidden="true">🕑</span> Tiempo: <strong id="temporizador">30</strong>s / 30s
+        </div>
+
+        <!-- Marcador con parejas encontradas y puntuación -->
+        <div class="grupo-marcador">
+        <span>Parejas: <strong id="parejas">0 / 0</strong></span>
+        <span class="separador-marcador"></span>
+        <span>Puntos: <strong id="puntuacion">0 pts</strong></span>
+        </div>
+    </header>
+
+    <!-- Avisos error técnico y estado -->
+    <p id="error-juego" class="aviso error-juego" role="alert" hidden></p>
+    <p id="estado-juego" class="solo-lectores" aria-live="polite"></p>
+
+    <!-- Zona de juego, Cuadrícula CSS Grid donde JavaScript inyecta las cartas -->
+    <section id="tablero" class="tablero" aria-label="Tablero de cartas"></section>
+
+    <!-- Recordatorio de los 4 eventos disponibles -->
+    <footer class="leyenda-juego">
+        Doble clic: Descubrir <span>|</span> Clic derecho: Marcar <span>|</span> [Espacio]: Pista (-50 pts)
+    </footer>
+
+    </main>
     <script type="module" src="js/juego.js" ></script>
 </body>
 </html>

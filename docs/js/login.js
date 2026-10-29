@@ -17,6 +17,8 @@ function inicializarUsuariosSiEsNecesario() {
     if (!usuariosGuardados) {
         guardarJSON(localStorage, STORAGE_KEYS.users, jsonUsuarios);
     }
+    //Sincroniza los usuarios actuales en localStorage de jsonUsuarios
+    guardarJSON(localStorage, STORAGE_KEYS.users, jsonUsuarios);
 }
 
 // Funciones auxiliares para la interfaz de errores
