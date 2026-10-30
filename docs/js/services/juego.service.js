@@ -33,7 +33,7 @@ export const NIVELES = Object.freeze({
 * Generación de la baraja y algoritmo de barajado (Fisher-Yates)
 * Prepara la baraja duplicando las cartas para crear parejas  y las mezcla aleatoriamente antes de inyectarlas al tablero.
 */
-export function crearBaraja(simbolos, nivel, aleatorio = Math.random) {
+export function crearBaraja(simbolos, nivel) {
     const configuracion = NIVELES[nivel];
 
     // Control de errores en caso de nivel inválido
@@ -44,18 +44,15 @@ export function crearBaraja(simbolos, nivel, aleatorio = Math.random) {
     // Calculamos cuántas parejas distintas se necesitan según el nivel
     const totalParejas = configuracion.cartas / 2;
 
-    // Recortamos el catálogo y creamos dos copias físicas de cada carta, 'html-a' y 'html-b'
+    // Recortamos el catálogo y creamos dos copias de cada carta
     const baraja = simbolos.slice(0, totalParejas).flatMap((simbolo) => [
-        new Tarjeta(simbolo, 'a'), 
-        new Tarjeta(simbolo, 'b')  
+        new Tarjeta(simbolo), 
+        new Tarjeta(simbolo)  
     ]);
 
-    // Algoritmo Fisher-Yates, Recorre la baraja de atrás hacia adelante intercambiando posiciones
+    // Algoritmo Fisher-Yates: Recorre la baraja intercambiando posiciones
     for (let i = baraja.length - 1; i > 0; i -= 1) {
-        // Calculamos un índice aleatorio entre 0 y la posición actual 'i'
-        const j = Math.floor(aleatorio() * (i + 1));
-
-        // Intercambiamos los elementos usando desestructuración
+        const j = Math.floor(Math.random() * (i + 1));
         [baraja[i], baraja[j]] = [baraja[j], baraja[i]];
     }
 

@@ -153,26 +153,8 @@ a {
     line-height: 1.5;
 }
 
-.aviso[data-tipo="exito"] {
-    border-color: var(--verde-exito);
-    border-left-color: var(--verde-exito);
-}
-
 .aviso[hidden] {
     display: none;
-}
-
-/* Oculta elementos visualmente pero los deja accesibles para lectores de pantalla */
-.solo-lectores {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
 }
 
 @media (max-width: 47.5rem) {

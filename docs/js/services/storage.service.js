@@ -36,5 +36,5 @@ export function guardarJSON(storage, key, value){
 //Elimina una clave concreta y sus datos asociados de storage
 export function eliminarDeStorage(storage, key){
     //Ejecuta la función nativa del navegador removeItem para limpiar la clave
-    storage.removeItem(storage, key);
+    storage.removeItem(key);
 }

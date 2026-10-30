@@ -27,7 +27,7 @@
         </div>
 
         <!-- Cuenta atrás de 30 segundos -->
-        <div class="caja-temporizador" aria-live="off">
+        <div class="caja-temporizador">
         <span aria-hidden="true">🕑</span> Tiempo: <strong id="temporizador">30</strong>s / 30s
         </div>
 
@@ -38,10 +38,6 @@
         <span>Puntos: <strong id="puntuacion">0 pts</strong></span>
         </div>
     </header>
-
-    <!-- Avisos error técnico y estado -->
-    <p id="error-juego" class="aviso error-juego" role="alert" hidden></p>
-    <p id="estado-juego" class="solo-lectores" aria-live="polite"></p>
 
     <!-- Zona de juego, Cuadrícula CSS Grid donde JavaScript inyecta las cartas -->
     <section id="tablero" class="tablero" aria-label="Tablero de cartas"></section>

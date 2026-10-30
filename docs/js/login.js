@@ -12,9 +12,10 @@ import { esPasswordAlfanumerica, autenticarUsuario } from './services/juego.serv
  * Carga el catálogo de usuarios por defecto en localStorage la primera vez que se entra.
  */
 function inicializarUsuariosSiEsNecesario() {
-    
-    //Sincroniza los usuarios actuales en localStorage de jsonUsuarios
-    guardarJSON(localStorage, STORAGE_KEYS.users, jsonUsuarios);
+    // Inicializa el catálogo en localStorage solo la primera vez si no existe
+    if (!leerJSON(localStorage, STORAGE_KEYS.users)) {
+        guardarJSON(localStorage, STORAGE_KEYS.users, jsonUsuarios);
+    }
 }
 
 // Funciones auxiliares para la interfaz de errores
@@ -39,10 +40,10 @@ $(function () {
 
     // Lee y limpia los espacios en blanco del nombre de usuario
     const nombreUsuario = $('#usuario').val().trim();
-    const password = $('#password').val().trim();
+    const password = $('#password').val();
 
-    // Campos obligatorios
-    if (!nombreUsuario || !password) {
+    // Campos obligatorios y vacios
+    if (!nombreUsuario || !password.trim()) {
         mostrarMensajeError('Por favor, introduce el usuario y la contraseña.');
         return;
     }

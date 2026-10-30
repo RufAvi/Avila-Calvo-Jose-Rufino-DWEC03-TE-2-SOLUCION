@@ -4,7 +4,7 @@ export const jsonUsuarios = [
       "nombre" : "Rufino",
       "apellido" : "Avila",
       "usuario": "javila",
-      "contraseña": "12345678"
+      "contraseña": "javila09"
    },  
    {
       "id":1,

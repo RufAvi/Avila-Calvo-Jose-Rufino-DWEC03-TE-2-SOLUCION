@@ -18,13 +18,8 @@ const nombresNivel = {
     avanzado: 'Avanzado'
 };
 
-// Control de seguridad recuperar estado de la partida
-const estado = leerJSON(sessionStorage, STORAGE_KEYS.game);
 
-// Si entran sin configurar nivel, de vuelta a bienvenida
-if (!estado || !nombresNivel[estado.level]) {
-    window.location.replace('bienvenida.html');
-}
+
 
 // Generador del HTML de las cartas
 function crearElementoCarta(carta, indice) {
@@ -36,7 +31,6 @@ function crearElementoCarta(carta, indice) {
         <button
         class="carta"
         type="button"
-        data-card-id="${carta.cardId}"
         data-symbol="${carta.id}"
         aria-label="Carta ${indice + 1} tapada"
         >
@@ -66,19 +60,34 @@ function crearElementoCarta(carta, indice) {
 
 // Inicialización del tablero principal
 $(function () {
+
+    // Control de seguridad recuperar estado de la partida
+    const estado = leerJSON(sessionStorage, STORAGE_KEYS.game);
+
+    // Si entran sin configurar nivel, de vuelta a bienvenida
+    if (!estado || !nombresNivel[estado.level]) {
+        window.location.replace('bienvenida.html');
+        return;
+    }
+    
     const $tablero = $('#tablero');
     const $etiquetaNivel = $('#insignia-nivel');
     const $visorTiempo = $('#temporizador');
     const $visorParejas = $('#parejas');
     const $visorPuntos = $('#puntuacion');
 
+    // Garantizamos coherencia si el usuario recarga la página: se reinicia con la nueva baraja
+    estado.score = 0;
+    estado.pairsFound = 0;
+    guardarJSON(sessionStorage, STORAGE_KEYS.game, estado);
+
     // Actualizamos el HUD superior con los datos de la sesión
     $etiquetaNivel.text(`Nivel: ${nombresNivel[estado.level]}`);
     $visorTiempo.text(String(estado.timeLimit));
-    $visorParejas.text(`${estado.pairsFound} / ${estado.totalPairs}`);
-    $visorPuntos.text(`${estado.score} pts`);
+    $visorParejas.text(`0 / ${estado.totalPairs}`);
+    $visorPuntos.text(`0 pts`);
 
-    // Pasamos el número de columnas (3 o 4) a la variable CSS Grid
+    // Pasamos el número de columnas (3 o 4) al tablero
     $tablero.css('--columns', estado.columns);
 
     // Generamos la baraja desordenada (Fisher-Yates)
@@ -100,7 +109,6 @@ $(function () {
 
     // Función para guardar el estado actual de la partida en sessionStorage
     function guardarEstadoPartida() {
-        estado.timeRemaining = tiempoRestante;
         guardarJSON(sessionStorage, STORAGE_KEYS.game, estado);
     }
 
@@ -220,20 +228,27 @@ $(function () {
         }
     });
 
+    // Soporte de teclado: Enter para voltear la carta enfocada
+    $tablero.on('keydown', '.carta', function (evento) {
+        if (evento.key === 'Enter') {
+            evento.preventDefault();
+            $(this).trigger('dblclick');
+        }
+    });
+
     // Clic derecho, Marca la carta de duda
     $tablero.on('contextmenu', '.carta', function (evento) {
+        evento.preventDefault(); // Evitamos que salga el menú del navegador SIEMPRE
         const $carta = $(this);
 
         if ($carta.hasClass('emparejada')) return;
-
-        evento.preventDefault(); // Evitamos que salga el menú del navegador
 
         $carta.toggleClass('marcada');
         const estaMarcada = $carta.hasClass('marcada');
 
         const $marcaTexto = $carta.find('.marca-carta');
         if (estaMarcada) {
-            $marcaTexto.removeAttr('hidden').text('⚑ Duda');
+            $marcaTexto.removeAttr('hidden').text('❓ Duda');
         } else {
             $marcaTexto.attr('hidden', true).text('');
         }

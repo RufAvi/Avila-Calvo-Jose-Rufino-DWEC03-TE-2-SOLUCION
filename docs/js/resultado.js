@@ -7,11 +7,10 @@ let estado;
 // Carga inicial, Recuperamos la partida finalizada de la sesión
 try {
     estado = leerJSON(sessionStorage, STORAGE_KEYS.game);
-    
-    } catch {
-
-        estado = null;
-    }
+} catch (error) {
+    console.error('Error al recuperar los datos de la partida:', error);
+    estado = null;
+}
 
 const nombresNivel = {
 
@@ -27,13 +26,14 @@ if (!estado || !estado.outcome) {
     } else {
         // Inyección de datos en la interfaz (HUD)
         const mensajesResultado = {
-            won: ['¡Enhorabuena, has ganado!', 'resultado-ganado'],
-            timeout: ['¡Tiempo agotado, has perdido!', 'resultado-perdido']
+            won: ['¡Enhorabuena, has ganado!', 'resultado-ganado', '🏆'],
+            timeout: ['¡Tiempo agotado, has perdido!', 'resultado-perdido', '⌛']
         };
 
         // Asigna estado por defecto (timeout) si falla la lectura
-        const [mensajeTexto, claseEstilo] = mensajesResultado[estado.outcome] ?? mensajesResultado.timeout;
+        const [mensajeTexto, claseEstilo, icono] = mensajesResultado[estado.outcome] ?? mensajesResultado.timeout;
 
+        $('.marca-trofeo').text(icono);
         $('#mensaje-resultado').text(mensajeTexto).addClass(claseEstilo);
         $('#resultado-puntuacion').text(`${estado.score} puntos`);
         $('#resultado-tiempo').text(`${estado.elapsed ?? 0} segundos`);

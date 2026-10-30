@@ -13,6 +13,11 @@ $(function () {
         return;
     }
 
+    // Si el usuario tiene nombre, personalizamos el saludo de bienvenida
+    if (usuarioActivo.nombre) {
+        $('#titulo-bienvenida').text(`¡Bienvenido, ${usuarioActivo.nombre}!`);
+    }
+
     const $formularioNivel = $('#formulario-nivel');
     const $mensajeAviso = $('#mensaje-bienvenida');
 
@@ -34,7 +39,6 @@ $(function () {
         // Preparamos el objeto con el estado inicial de la partida
         const estadoPartida = {
             level: nivelSeleccionado,
-            totalCards: configuracion.cartas,
             totalPairs: configuracion.cartas / 2, 
             columns: configuracion.columnas,
             score: 0,
